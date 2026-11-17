@@ -26,8 +26,8 @@
 #include <U8g2lib.h>
 
 // ================= 1. CẤU HÌNH WIFI & SERVER =================
-const char* ssid = "NOIS-FLOOR-4";
-const char* password = "BrightCoff@e2026";
+const char* ssid = "TEN_WIFI_CUA_BAN";
+const char* password = "MAT_KHAU_WIFI";
 // USE_NGROK = true : đi qua Internet bằng domain ngrok (wss, cổng 443) - ESP32 không cần chung mạng LAN với máy chạy server.
 //                    Trên máy chạy server.py: ngrok http --url=https://unexpired-dugout-bush.ngrok-free.dev 8000
 // USE_NGROK = false: kết nối thẳng IP LAN (ws, cổng 8000)
