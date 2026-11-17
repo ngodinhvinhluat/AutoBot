@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import WebSocket
 
+from autobot.ai.dxai_chat import DxAIChatTurn, get_dxai_api_key
 from autobot.ai.gemini_chat import GeminiChatTurn
 from autobot.ai.gemini_client import HAS_GENAI, get_active_api_key
 from autobot.ai.local_fallback import local_contextual_fallback
@@ -214,9 +215,11 @@ async def stream_ai_and_tts_clauses(
             await emit(c)
 
     # Tầng 1: sinh câu trả lời (Gemini nếu có API key, không thì bộ trả lời nội bộ)
+    dxai_key = get_dxai_api_key()
     api_key = get_active_api_key()
-    if HAS_GENAI and api_key:
-        chat = GeminiChatTurn(api_key, session_state, user_text)
+    if dxai_key or (HAS_GENAI and api_key):
+        # DxAI ưu tiên khi có DXAI_API_KEY; không thì dùng Gemini như trước
+        chat = DxAIChatTurn(dxai_key, session_state, user_text) if dxai_key else GeminiChatTurn(api_key, session_state, user_text)
         try:
             await asyncio.wait_for(chat.stream_clauses(emit), timeout=GEMINI_TURN_TIMEOUT_SECONDS)
             if not emitted_any:

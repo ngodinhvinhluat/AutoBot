@@ -11,3 +11,4 @@ miniaudio
 google-genai>=2.30.1
 python-dotenv
 vieneu
+requests
