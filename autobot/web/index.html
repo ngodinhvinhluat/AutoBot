@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AutoBot - Bảng điều khiển</title>
+  <link rel="stylesheet" href="static/dashboard.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>🎧 AutoBot — Bảng điều khiển đàm thoại giọng nói</h1>
+
+    <div class="card status">
+      <div><strong>Chế độ AI:</strong> <span id="mode" style="color:var(--ok)">Đang tải...</span></div>
+      <div class="small muted">File log: <code id="logfile" style="color:var(--warn)">voice_session.log</code> · Cài đặt lưu tại: <code id="cfgfile" style="color:var(--warn)">settings.json</code></div>
+    </div>
+
+    <div class="card">
+      <h3>📟 Thiết bị đang kết nối</h3>
+      <div id="devices" class="muted">Đang tải...</div>
+      <div class="small muted legend" style="margin-top:6px">Thanh mức mic:<i style="background:#4ade80"></i>mức hiện tại<i style="background:var(--muted)"></i>nền ồn<i style="background:var(--warn)"></i>ngưỡng duy trì câu<i style="background:var(--bad)"></i>ngưỡng bắt đầu thu</div>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ Cài đặt <span class="small muted">(áp dụng ngay, tự lưu)</span></h3>
+      <div class="actions">
+        <input type="text" id="testText" placeholder="Câu đọc thử (để trống = câu mặc định)"/>
+        <button id="btnTest" onclick="testTts()">🔈 Phát thử ra loa</button>
+        <button class="secondary" onclick="action('reset_context')">🧹 Xóa ngữ cảnh AI</button>
+        <button class="secondary" onclick="action('clear_history')">🗑️ Xóa lịch sử</button>
+        <button class="secondary" onclick="if (confirm('Khôi phục toàn bộ cài đặt về mặc định?')) action('reset_settings')">↺ Khôi phục mặc định</button>
+      </div>
+      <div id="settings" class="muted">Đang tải cài đặt...</div>
+    </div>
+
+    <div class="grid">
+      <div class="card log-box">
+        <h3>💬 Lịch sử hội thoại</h3>
+        <div id="logs" class="muted">Hãy nói vào Mic để bắt đầu trò chuyện...</div>
+      </div>
+      <div class="card log-box">
+        <h3>📋 System Log trực tiếp</h3>
+        <div id="events" class="muted">Đang chờ sự kiện âm thanh...</div>
+      </div>
+    </div>
+  </div>
+  <div id="toast"></div>
+
+  <script src="static/dashboard.js"></script>
+</body>
+</html>

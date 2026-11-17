@@ -1,0 +1,42 @@
+# Một domain ngrok, 2 site AutoBot chia theo đường dẫn:
+#   https://unexpired-dugout-bush.ngrok-free.dev/    -> AutoBot :8000 (ESP32 dùng /ws/audio ở đây)
+#   https://unexpired-dugout-bush.ngrok-free.dev/b/  -> AutoBot :4500 (bỏ tiền tố /b trước khi chuyển vào)
+# Authtoken lấy từ config mặc định, chạy:
+#   C:\Tools\ngrok\ngrok.exe start --all --config "%LOCALAPPDATA%\ngrok\ngrok.yml" --config ngrok.yml
+version: 3
+endpoints:
+  - name: site-a
+    url: https://site-a.internal
+    upstream:
+      url: 8000
+  - name: site-b
+    url: https://site-b.internal
+    upstream:
+      url: 4500
+  - name: public
+    url: https://unexpired-dugout-bush.ngrok-free.dev
+    upstream:
+      url: 8000   # bắt buộc khai báo; thực tế mọi request đã được forward-internal ở trên chuyển đi
+    traffic_policy:
+      on_http_request:
+        - expressions:
+            - "req.url.path == '/b'"
+          actions:
+            - type: redirect
+              config:
+                to: "/b/"
+                status_code: 301
+        - expressions:
+            - "req.url.path.startsWith('/b/')"
+          actions:
+            - type: url-rewrite
+              config:
+                from: "/b/(.*)"
+                to: "/$1"
+            - type: forward-internal
+              config:
+                url: https://site-b.internal
+        - actions:
+            - type: forward-internal
+              config:
+                url: https://site-a.internal

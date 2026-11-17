@@ -1,0 +1,14 @@
+﻿# Secrets
+.env
+
+# Runtime data / logs (ghi âm, log hội thoại)
+recordings/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Arduino/ESP32 build output
+esp32_full_duplex/build/

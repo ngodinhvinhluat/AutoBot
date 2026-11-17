@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+websockets
+SpeechRecognition
+edge-tts
+gTTS
+numpy
+sounddevice
+scipy
+miniaudio
+google-genai>=2.30.1
+python-dotenv
+vieneu
