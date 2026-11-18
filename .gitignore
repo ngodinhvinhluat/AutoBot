@@ -12,3 +12,17 @@ __pycache__/
 
 # Arduino/ESP32 build output
 esp32_full_duplex/build/
+
+# Thong tin may chu (IP, user, ha tang noi bo) - chi luu local
+servers/
+
+# WiFi that cua firmware ESP32
+esp32_full_duplex/secrets.h
+
+# Ha tang that cua k3s (IP node, registry, namespace) - chi luu local, xem *.example
+k8s/local/
+deploy-k3s.local.psd1
+
+# Rac / ban sao cuc bo
+autobot/env.zip
+nul

@@ -1,0 +1,19 @@
+# Dashboard + WebSocket ESP32 qua Traefik của k3s (cổng 80 của node). Host thật đặt trong overlay k8s/local/.
+# Traefik tự nâng cấp WebSocket, không cần annotation.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: autobot
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: autobot.example.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: autobot
+                port:
+                  name: http

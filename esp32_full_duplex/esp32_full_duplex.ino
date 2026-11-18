@@ -26,15 +26,49 @@
 #include <U8g2lib.h>
 
 // ================= 1. CẤU HÌNH WIFI & SERVER =================
-const char* ssid = "TEN_WIFI_CUA_BAN";
-const char* password = "MAT_KHAU_WIFI";
-// USE_NGROK = true : đi qua Internet bằng domain ngrok (wss, cổng 443) - ESP32 không cần chung mạng LAN với máy chạy server.
-//                    Trên máy chạy server.py: ngrok http --url=https://unexpired-dugout-bush.ngrok-free.dev 8000
-// USE_NGROK = false: kết nối thẳng IP LAN (ws, cổng 8000)
-#define USE_NGROK true
-#if USE_NGROK
+// WiFi và địa chỉ hạ tầng thật đặt trong secrets.h (cùng thư mục, đã .gitignore - không đẩy lên Git):
+//   #define WIFI_SSID "ten_wifi"
+//   #define WIFI_PASSWORD "mat_khau"
+//   #define K3S_HOST "autobot.<IP_node>.nip.io"   // cho SERVER_K3S
+//   #define REMOTE_HOST "<IP_may_chay_server>"    // cho SERVER_REMOTE
+#if __has_include("secrets.h")
+#include "secrets.h"
+#endif
+#ifndef WIFI_SSID
+#define WIFI_SSID "TEN_WIFI_CUA_BAN"
+#endif
+#ifndef WIFI_PASSWORD
+#define WIFI_PASSWORD "MAT_KHAU_WIFI"
+#endif
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
+#ifndef K3S_HOST
+#define K3S_HOST "autobot.example.local"
+#endif
+#ifndef REMOTE_HOST
+#define REMOTE_HOST "192.168.1.100"
+#endif
+// Chọn Server mà ESP32 kết nối:
+//   SERVER_LAN   : thẳng IP LAN máy chạy server.py (ws, cổng 8000)
+//   SERVER_NGROK : qua Internet bằng domain ngrok (wss, cổng 443). Máy chạy server.py phải bật
+//                  ngrok http --url=https://unexpired-dugout-bush.ngrok-free.dev 8000
+//   SERVER_K3S   : pod AutoBot trên k3s, đi qua Traefik (ws, cổng 80). ESP32 phải ra được IP node và phân giải được K3S_HOST
+//   SERVER_REMOTE: server.py chạy trên máy khác (REMOTE_HOST), nối thẳng IP (ws, cổng 8000)
+#define SERVER_LAN   0
+#define SERVER_NGROK 1
+#define SERVER_K3S   2
+#define SERVER_REMOTE 3
+#define SERVER_MODE  SERVER_REMOTE
+#define USE_TLS (SERVER_MODE == SERVER_NGROK)
+#if SERVER_MODE == SERVER_NGROK
 const char* ws_host = "unexpired-dugout-bush.ngrok-free.dev";
 const uint16_t ws_port = 443;
+#elif SERVER_MODE == SERVER_K3S
+const char* ws_host = K3S_HOST;  // Traefik chọn app theo Host header nên phải dùng tên, không dùng IP
+const uint16_t ws_port = 80;
+#elif SERVER_MODE == SERVER_REMOTE
+const char* ws_host = REMOTE_HOST;
+const uint16_t ws_port = 8000;
 #else
 const char* ws_host = "172.16.30.40"; // Thay bằng IPv4 máy tính chạy server.py (VD: 172.16.30.40 hoặc 172.17.201.232)
 const uint16_t ws_port = 8000;
@@ -407,8 +441,10 @@ void oledTask(void* parameter) {
     // ---------- Thanh tiêu đề: Server đang kết nối + sóng WiFi ----------
     // Nền sáng = đã kết nối Server; viền rỗng = chưa/mất kết nối
     oled.setFont(u8g2_font_6x10_tf);
-#if USE_NGROK
+#if SERVER_MODE == SERVER_NGROK
     snprintf(line, sizeof(line), "ngrok wss");      // domain quá dài cho thanh tiêu đề 128px
+#elif SERVER_MODE == SERVER_K3S
+    snprintf(line, sizeof(line), "k3s autobot");
 #else
     snprintf(line, sizeof(line), "%s:%u", ws_host, ws_port);
 #endif
@@ -746,7 +782,7 @@ void setup() {
   String mac = WiFi.macAddress();
   mac.replace(":", "");
   snprintf(wsFullPath, sizeof(wsFullPath), "%s&buf=%u&dev=esp32-%s", ws_path, (unsigned)spkRingBufSize, mac.c_str());
-#if USE_NGROK
+#if USE_TLS
   Serial.printf("[WS] wss://%s:%u%s\n", ws_host, ws_port, wsFullPath);
   webSocket.beginSSL(ws_host, ws_port, wsFullPath);  // TLS không kiểm tra CA (đủ cho thử nghiệm)
 #else

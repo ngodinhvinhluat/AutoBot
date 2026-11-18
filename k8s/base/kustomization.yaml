@@ -1,0 +1,13 @@
+# Base dùng chung, KHÔNG chứa thông tin hạ tầng (IP, registry, namespace thật).
+# Triển khai thật qua overlay đã .gitignore:
+#   cp -r k8s/local.example k8s/local    # rồi điền giá trị thật
+#   kubectl --context <context> apply -k k8s/local
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: autobot
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml

@@ -1,0 +1,29 @@
+# Bí mật: đưa vào k3s bằng Secret, không đóng vào image
+.env
+.env.*
+!.env.example
+
+# Dữ liệu chạy, log, ghi âm
+recordings/
+*.log
+autobot/env.zip
+
+# Không cần trong image server
+.git/
+.backup/
+.claude/
+k8s/
+esp32_full_duplex/
+esp32_audio_test/
+*.wav
+live_pc_client.py
+mock_esp32_client.py
+test_pipeline_e2e.py
+ngrok.yml
+*.ps1
+*.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/

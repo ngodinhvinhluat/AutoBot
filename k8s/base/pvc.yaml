@@ -1,0 +1,11 @@
+# /data: settings.json, voice_session.log, recordings/, cache model VieNeu + HuggingFace (~1-2 GB khi bật giọng đọc)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: autobot-data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi

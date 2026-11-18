@@ -78,7 +78,7 @@ Client mở `ws://localhost:8000/ws/audio?format=pcm&vad=auto`, thu mic, gửi l
 2. Cài thư viện: `WebSocketsClient` (arduinoWebSockets) và `U8g2`.
 3. Sửa phần cấu hình ở đầu file:
    - `ssid` / `password`: WiFi của bạn.
-   - `USE_NGROK`: `true` để đi qua Internet bằng domain ngrok (`wss`, cổng 443), `false` để nối thẳng IP LAN của máy chạy server (`ws`, cổng 8000).
+   - `SERVER_MODE`: `SERVER_NGROK` đi qua Internet bằng domain ngrok (`wss`, cổng 443), `SERVER_LAN` nối thẳng IP LAN của máy chạy server (`ws`, cổng 8000), `SERVER_K3S` nối pod trên k3s qua Traefik (`ws`, cổng 80, xem [DEPLOY_K3S.md](DEPLOY_K3S.md)).
    - `ws_host`: domain ngrok hoặc IPv4 của máy chạy server.
 4. Chọn board ESP32-S3, bật **Tools → PSRAM → OPI PSRAM**, rồi nạp.
 

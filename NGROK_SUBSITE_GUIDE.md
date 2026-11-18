@@ -207,5 +207,5 @@ Giới hạn:
 ## 6. Lưu ý riêng cho AutoBot
 
 - Các instance AutoBot dùng **chung** `settings.json`, `voice_session.log`, `recordings/`. Đổi cài đặt ở một dashboard là ảnh hưởng instance kia.
-- ESP32 (`esp32_full_duplex.ino`, `USE_NGROK true`) gọi site `/`. Muốn ESP32 dùng site khác thì đổi `ws_path` thành `"/<prefix>/ws/audio?format=pcm&vad=auto"`.
+- ESP32 (`esp32_full_duplex.ino`, `SERVER_MODE SERVER_NGROK`) gọi site `/`. Muốn ESP32 dùng site khác thì đổi `ws_path` thành `"/<prefix>/ws/audio?format=pcm&vad=auto"`.
 - Đổi port AutoBot: `$env:PORT=<port>; python server.py`, mặc định là 8000.

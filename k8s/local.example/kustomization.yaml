@@ -1,0 +1,16 @@
+# Mẫu overlay hạ tầng. Chép thành k8s/local/ (đã .gitignore) rồi điền giá trị thật.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: autobot                      # namespace trên cụm
+resources:
+  - ../base
+images:
+  - name: autobot
+    newName: registry.example.com/autobot   # tên image đã nạp vào node / registry
+    newTag: "0.1.1"                          # deploy-k3s.ps1 tự cập nhật
+patches:
+  - target: { kind: Ingress, name: autobot }
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: autobot.<NODE_IP>.nip.io

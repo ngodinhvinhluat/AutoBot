@@ -33,7 +33,8 @@ _GRAPH_FILES = [
     "vieneu_prefill.onnx", "vieneu_decode_step.onnx", "vieneu_acoustic_cached.onnx",
     "vieneu_backbone_shared.data", "vieneu_v3_heads.npz", "config.json", "tokenizer.json",
 ]
-LOCAL_ONNX_ROOT = os.path.join(os.path.expanduser("~"), ".cache", "vieneu_local")
+# Container/k3s: đặt VIENEU_LOCAL_DIR vào volume để không phải chép lại model mỗi lần pod khởi động
+LOCAL_ONNX_ROOT = os.environ.get("VIENEU_LOCAL_DIR", "").strip() or os.path.join(os.path.expanduser("~"), ".cache", "vieneu_local")
 
 
 def _local_onnx_dir(precision: str) -> Optional[str]:
